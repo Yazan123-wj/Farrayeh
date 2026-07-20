@@ -21,22 +21,9 @@ export function HeroAmbient() {
   useEffect(() => {
     if (reducedMotion || lowPower) return;
 
-    let idleId: number | undefined;
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    const start = () => setReady(true);
-
-    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      idleId = window.requestIdleCallback(start, { timeout: 1800 });
-    } else {
-      timeoutId = setTimeout(start, 900);
-    }
-
+    const timeoutId = globalThis.setTimeout(() => setReady(true), 900);
     return () => {
-      if (idleId !== undefined && "cancelIdleCallback" in window) {
-        window.cancelIdleCallback(idleId);
-      }
-      if (timeoutId !== undefined) clearTimeout(timeoutId);
+      globalThis.clearTimeout(timeoutId);
     };
   }, [reducedMotion, lowPower]);
 
