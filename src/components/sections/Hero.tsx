@@ -59,7 +59,10 @@ export function Hero({ content, accentEyebrow = false }: HeroProps) {
         style={{ marginLeft: "calc(50% - 50vw)" }}
         title={content.image.label}
       >
-        <HeroParallaxMedia asset={content.image} />
+        <HeroParallaxMedia
+          asset={content.image}
+          poster="/images/entrance.png"
+        />
       </div>
     </section>
   );

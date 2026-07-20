@@ -52,8 +52,8 @@ const homeContent: HomePageContent = {
     cta: { label: "Book a consultation", href: "/contact" },
     image: {
       label: "Hero — Farrayeh Law office entrance",
-      src: "/images/entrance.png",
-      alt: "Glass entrance to Farrayeh Law office with logo on the door",
+      src: "/videos/hero.mp4",
+      alt: "Farrayeh Law office entrance video",
       width: 1800,
       height: 1000,
     },

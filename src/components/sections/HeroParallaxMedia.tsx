@@ -11,23 +11,31 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface HeroParallaxMediaProps {
   asset: MediaAsset;
+  /** Optional still frame shown before the video loads / for reduced motion */
+  poster?: string;
+}
+
+function isVideoSrc(src: string) {
+  return /\.(mp4|webm|ogg)(\?|$)/i.test(src);
 }
 
 /**
  * Full-bleed hero media with a scrubbed curtain wipe (works both scroll
- * directions) plus gentle parallax on the photo itself.
+ * directions) plus gentle parallax on the media itself.
  */
-export function HeroParallaxMedia({ asset }: HeroParallaxMediaProps) {
+export function HeroParallaxMedia({ asset, poster }: HeroParallaxMediaProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const curtainRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const reducedMotion = useReducedMotion();
+  const isVideo = isVideoSrc(asset.src);
 
   useEffect(() => {
     const wrap = wrapRef.current;
     const curtain = curtainRef.current;
-    const img = imgRef.current;
-    if (!wrap || !curtain || !img || reducedMotion) return;
+    const media = mediaRef.current;
+    if (!wrap || !curtain || !media || reducedMotion) return;
 
     const ctx = gsap.context(() => {
       gsap.set(curtain, {
@@ -49,7 +57,7 @@ export function HeroParallaxMedia({ asset }: HeroParallaxMediaProps) {
       });
 
       gsap.fromTo(
-        img,
+        media,
         { yPercent: -6 },
         {
           yPercent: 6,
@@ -67,6 +75,26 @@ export function HeroParallaxMedia({ asset }: HeroParallaxMediaProps) {
     return () => ctx.revert();
   }, [reducedMotion]);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isVideo) return;
+
+    if (reducedMotion) {
+      video.pause();
+      return;
+    }
+
+    const play = () => {
+      void video.play().catch(() => {
+        /* Autoplay can be blocked; muted + playsInline usually works */
+      });
+    };
+
+    play();
+    video.addEventListener("loadeddata", play);
+    return () => video.removeEventListener("loadeddata", play);
+  }, [isVideo, reducedMotion, asset.src]);
+
   return (
     <div
       ref={wrapRef}
@@ -76,15 +104,30 @@ export function HeroParallaxMedia({ asset }: HeroParallaxMediaProps) {
         ref={curtainRef}
         className="absolute inset-0 overflow-hidden will-change-[clip-path]"
       >
-        <div ref={imgRef} className="absolute inset-0 scale-110">
-          <Image
-            src={asset.src}
-            alt={asset.alt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+        <div ref={mediaRef} className="absolute inset-0 scale-110">
+          {isVideo && !reducedMotion ? (
+            <video
+              ref={videoRef}
+              className="absolute inset-0 h-full w-full object-cover"
+              src={asset.src}
+              poster={poster}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-label={asset.alt}
+            />
+          ) : (
+            <Image
+              src={poster && isVideo ? poster : asset.src}
+              alt={asset.alt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          )}
         </div>
       </div>
     </div>
