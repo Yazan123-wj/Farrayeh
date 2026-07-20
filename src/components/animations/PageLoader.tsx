@@ -34,9 +34,9 @@ export function PageLoader() {
     };
 
     if (reducedMotion) {
-      const t = window.setTimeout(finish, 350);
+      const t = setTimeout(finish, 350);
       return () => {
-        window.clearTimeout(t);
+        clearTimeout(t);
         document.documentElement.classList.remove("loader-active");
         document.body.style.overflow = "";
       };

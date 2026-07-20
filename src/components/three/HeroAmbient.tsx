@@ -22,21 +22,21 @@ export function HeroAmbient() {
     if (reducedMotion || lowPower) return;
 
     let idleId: number | undefined;
-    let timeoutId: number | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     const start = () => setReady(true);
 
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       idleId = window.requestIdleCallback(start, { timeout: 1800 });
     } else {
-      timeoutId = window.setTimeout(start, 900);
+      timeoutId = setTimeout(start, 900);
     }
 
     return () => {
       if (idleId !== undefined && "cancelIdleCallback" in window) {
         window.cancelIdleCallback(idleId);
       }
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
     };
   }, [reducedMotion, lowPower]);
 
