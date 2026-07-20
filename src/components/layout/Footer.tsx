@@ -52,7 +52,7 @@ export function Footer({ content }: FooterProps) {
 
         <div className="mt-8 overflow-hidden border-t border-white/10 pt-8 md:mt-10 md:pt-10">
           <p
-            className="font-display text-[12vw] leading-[0.85] tracking-[-0.04em] text-white/90 md:text-[9.5vw] lg:text-[7.5rem]"
+            className="font-display whitespace-nowrap text-[7.2vw] leading-[0.85] tracking-[-0.04em] text-white/90 md:text-[5.8vw] lg:text-[4.85rem] xl:text-[5.75rem]"
             aria-hidden
           >
             {content.wordmark}

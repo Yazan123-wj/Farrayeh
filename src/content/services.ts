@@ -213,7 +213,7 @@ const servicesContent: ServicesPageContent = {
     tagline:
       "Innovative strategies paired with outstanding service. Our expertise and talent are tailored to meet your evolving needs.",
     copyright: "Copyright © 2025",
-    wordmark: "Farrayeh",
+    wordmark: "Farrayeh law firm",
     columns: [
       {
         title: "Explore",
